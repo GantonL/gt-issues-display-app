@@ -9,7 +9,7 @@ const octokit = new Octokit({
 const PER_PAGE = 10;
 
 export const load: PageServerLoad = async () => {
-  const issues = await octokit.request('GET /repos/{owner}/{repo}/issues', {
+  const issuesRes = await octokit.request('GET /repos/{owner}/{repo}/issues', {
     owner: 'treeverse',
     repo: 'lakeFS',
     headers: {
@@ -17,16 +17,23 @@ export const load: PageServerLoad = async () => {
     },
     per_page: PER_PAGE,
   });
-  const pagesUrl = issues.headers.link?.match(/(?<=<)([\S]*)(?=>; rel="last")/i);
-  const pages = getTotalPagesFromUrl((pagesUrl ?? [])[0]?.toString());
-  return {issues: issues.data, pages};
+  const pages = getTotalPagesFromUrl(issuesRes.headers.link);
+  const issues = issuesRes?.data?.map(d => {
+    return {
+      number: d.number,
+      title: d.title,
+      body: d.body,
+    }
+  })
+  return {issues, pages};
 };
 
 const getTotalPagesFromUrl = (url?: string) => {
-  if (!url || url?.length === 0) {
+  const matches = url?.match(/(?<=<)([\S]*)(?=>; rel="last")/i);
+  if (!matches || matches?.length === 0) {
      return 0;
   }
-  const paramsString = url.split('?')[1] ?? ''; 
+  const paramsString = matches[0]?.toString().split('?')[1] ?? ''; 
   const queryParams = paramsString.split('&').map(p => {
     const keyValue = p.split('=');
     return {
