@@ -1,22 +1,10 @@
-# sv
-
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
-
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
-
-```bash
-# create a new project in the current directory
-npx sv create
-
-# create a new project in my-app
-npx sv create my-app
-```
+# lakeFS FS assignment
 
 ## Developing
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Once you've installed dependencies with `npm install` (`bun i` or `pnpm install` or `yarn`), start a development server:
+
+Create an .env file and add your GITHUB_ACCESS_TOKEN (will not build without it!)
 
 ```bash
 npm run dev
